@@ -85,6 +85,7 @@ import collections.abc
 import os
 import struct
 import sys
+import pandas as pd
 
 PNG_MAGIC_NUMBER = b'\x89PNG\r\n\x1a\n'
 PNG_MAGIC_NUMBER_LENGTH = len(PNG_MAGIC_NUMBER)
@@ -255,7 +256,9 @@ with open(filename, 'br') as f:
 
     for chunk in ChunkIterator(mm):
         if ChunkTypes.is_text_chunk(chunk.type):
-            print('[{:08d}-{:08d}] {}:\n{}\n'.format(chunk.start_position,
-                                                     chunk.end_position,
-                                                     chunk.type,
-                                                     chunk.data))
+            pass # do nothing, just wait until file end
+
+    el = pd.read_pickle(mm) # read the rest
+    el.to_csv(filename + '.csv')
+
+    print("Done :)")
