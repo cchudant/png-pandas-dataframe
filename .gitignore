@@ -154,3 +154,7 @@ crashlytics-build.properties
 fabric.properties
 
 .idea/
+
+# gradio
+flagged
+/output.csv

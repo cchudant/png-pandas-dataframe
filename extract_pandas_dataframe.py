@@ -230,35 +230,32 @@ class ChunkIterator(collections.abc.Iterator):
         return self._file.read(ChunkField.CRC.length())
 
 
-def print_error_and_exit(*args, **kwargs):
-    print(*args, file=sys.stderr, **kwargs)
-    exit(1)
+def extract_file_to_file(filename):
+    if not os.path.isfile(filename):
+        raise RuntimeError('"{}" file not found!'.format(filename))
+
+    with open(filename, 'br') as f:
+        ofile = filename + '.csv'
+        extract(f, ofile)
+
+        print(f"Done: {ofile}")
+        # check file header
 
 
-parser = argparse.ArgumentParser(description='Prints PNG text sections')
-parser.add_argument('file', help='an PNG image')
+def extract(file, output_file):
+    file.seek(0)
+    if file.read(PNG_MAGIC_NUMBER_LENGTH) != PNG_MAGIC_NUMBER:
+        raise RuntimeError('file is not an PNG image!')
 
-filename = parser.parse_args().file
+    for _chunk in ChunkIterator(file):
+        pass # do nothing, just wait until file end
 
-if not os.path.isfile(filename):
-    print_error_and_exit('"{}" file not found!'.format(filename))
+    el = pd.read_pickle(file) # read the rest
+    el.to_csv(output_file)
 
-with open(filename, 'br') as f:
-    # check file header
-    if f.read(PNG_MAGIC_NUMBER_LENGTH) != PNG_MAGIC_NUMBER:
-        print_error_and_exit('"{}" file is not an PNG image!'.format(filename))
 
-    # load the picture to memory
-    mm = mmap(f.fileno(), 0, access=ACCESS_READ)
-
-    # skip file header
-    mm.seek(PNG_MAGIC_NUMBER_LENGTH, os.SEEK_SET)
-
-    for chunk in ChunkIterator(mm):
-        if ChunkTypes.is_text_chunk(chunk.type):
-            pass # do nothing, just wait until file end
-
-    el = pd.read_pickle(mm) # read the rest
-    el.to_csv(filename + '.csv')
-
-    print("Done :)")
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description='Extract CSV from PNG file')
+    parser.add_argument('file', help='an PNG image')
+    filename = parser.parse_args().file
+    extract_file_to_file(filename)

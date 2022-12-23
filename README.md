@@ -1,3 +1,15 @@
+---
+title: extract_dataframe_from_png
+emoji: 🥳
+colorFrom: red
+colorTo: yellow
+sdk: gradio
+sdk_version: "3.13.2"
+app_file: app.py
+pinned: false
+---
+
+
 # png-pandas-dataframe
 Recover pandas dataframe hidden in image
 
@@ -8,19 +20,19 @@ Based on [s373r/steganography-png-decoder](https://github.com/s373r/steganograph
 ```
 $ git clone https://github.com/cchudant/png-pandas-dataframe
 $ cd png-pandas-dataframe
-$ chmod +x png-pandas-dataframe.py
+$ chmod +x extract_pandas_dataframe.py
 ```
 
 # Bacis usage
 
 ```
-$ ./png-pandas-dataframe.py -h
+$ ./extract_pandas_dataframe.py -h
 ```
 
 ```
-usage: png-pandas-dataframe.py [-h] file
+usage: extract_pandas_dataframe.py [-h] file
 
-Prints PNG text sections
+Prints Extract CSV from PNG file
 
 positional arguments:
   file        an PNG image
@@ -30,5 +42,5 @@ optional arguments:
 ```
 ---
 ```
-$ ./png-pandas-dataframe.py sample-picture.png
+$ ./extract_pandas_dataframe.py sample-picture.png
 ```
